@@ -69,7 +69,7 @@ public class CaptureJsonUtils {
     }
 
     private static Set<ApidChange> compileChangeSet(JSONArray original, JSONArray current,
-                                                              String arrayAttrPath)
+                                                    String arrayAttrPath)
             throws InvalidApidChangeException {
         if (hasIds(original)) {
             return compileChangeSetForArrayWithIds(original, current, arrayAttrPath);
@@ -111,7 +111,7 @@ public class CaptureJsonUtils {
 
         int originalIndex = 0;
         for (int currentIndex = 0; currentIndex < sortedCurrent.length(); currentIndex++) {
-            Integer currentId = getIdForPlurEltAtIndex(sortedCurrent, currentIndex);
+            Long currentId = getIdForPlurEltAtIndex(sortedCurrent, currentIndex);
             Object currentElt = sortedCurrent.opt(currentIndex);
 
             if (currentId == null) {
@@ -122,7 +122,7 @@ public class CaptureJsonUtils {
                 changeSet.add(new ApidUpdate(wrapperObject, relativePath));
             } else {
                 // update to existing id
-                Integer originalId = null;
+                Long originalId = null;
                 while (originalIndex < sortedOriginal.length()) { // try to find a matching id in original
                     originalId = getIdForPlurEltAtIndex(sortedOriginal, originalIndex);
                     if (currentId <= originalId) break;
@@ -142,7 +142,7 @@ public class CaptureJsonUtils {
         }
 
         while (originalIndex < sortedOriginal.length()) {
-            Integer idForPlurEltAtIndex = getIdForPlurEltAtIndex(sortedOriginal, originalIndex++);
+            Long idForPlurEltAtIndex = getIdForPlurEltAtIndex(sortedOriginal, originalIndex++);
             changeSet.add(new ApidDelete(relativePath + "#" + idForPlurEltAtIndex));
         }
 
@@ -166,8 +166,8 @@ public class CaptureJsonUtils {
             Object leftVal = original.opt(left);
             Object rightVal = original.opt(right);
             if (left < start + halfLen && right < start + len) {
-                Integer leftId = getIdForPlurEltAtIndex(original, left);
-                Integer rightId = getIdForPlurEltAtIndex(original, right);
+                Long leftId = getIdForPlurEltAtIndex(original, left);
+                Long rightId = getIdForPlurEltAtIndex(original, right);
                 boolean bothIdsNull = leftId == null && rightId == null;
                 leftId = leftId == null ? 0 : leftId;
                 rightId = rightId == null ? 0 : rightId;
@@ -196,9 +196,9 @@ public class CaptureJsonUtils {
         return copy;
     }
 
-    private static Integer getIdForPlurEltAtIndex(JSONArray array, int index) {
+    public static Long getIdForPlurEltAtIndex(JSONArray array, int index) {
         Object element = array.opt(index);
-        if (element instanceof JSONObject) return (Integer) ((JSONObject) element).opt("id");
+        if (element instanceof JSONObject) return (Long) ((JSONObject) element).opt("id");
         return null;
     }
 
