@@ -196,7 +196,7 @@ public class CaptureJsonUtils {
         return copy;
     }
 
-    public static Long getIdForPlurEltAtIndex(JSONArray array, int index) {
+    private static Long getIdForPlurEltAtIndex(JSONArray array, int index) {
         Object element = array.opt(index);
         if (element instanceof JSONObject) return (Long) ((JSONObject) element).opt("id");
         return null;
